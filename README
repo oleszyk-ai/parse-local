@@ -77,31 +77,31 @@ Then open **[http://localhost:8000](http://localhost:8000)**
 
 ```bash
 curl -X POST http://localhost:8000/api/scrape/url \
-  -H "Content-Type: application/json" \
-  -d '{
-    "url": "https://news.ycombinator.com",
-    "prompt": "Extract the top 10 story titles and scores"
-  }'
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://news.ycombinator.com",
+    "prompt": "Extract the top 10 story titles and scores"
+  }'
 ```
 
 **Parse raw HTML**
 
 ```bash
 curl -X POST http://localhost:8000/api/scrape/html \
-  -H "Content-Type: application/json" \
-  -d '{
-    "html": "<div>...</div>",
-    "prompt": "Extract all product names and prices"
-  }'
+  -H "Content-Type: application/json" \
+  -d '{
+    "html": "<div>...</div>",
+    "prompt": "Extract all product names and prices"
+  }'
 ```
 
 **Response**
 
 ```json
 {
-  "success": true,
-  "data": { "..." },
-  "elapsed_seconds": 14.2
+  "success": true,
+  "data": { "..." },
+  "elapsed_seconds": 14.2
 }
 ```
 
@@ -116,10 +116,10 @@ curl -X POST http://localhost:8000/api/scrape/html \
 Create a `.env` file in the project root and override any defaults:
 
 ```bash
-N_GPU_LAYERS=-1     # -1 = all layers on GPU, 0 = CPU only
-N_CTX=8192          # context window — increase for longer pages
-TEMPERATURE=0.1     # lower = more consistent output
-PORT=8000           # server port
+N_GPU_LAYERS=-1     # -1 = all layers on GPU, 0 = CPU only
+N_CTX=8192          # context window — increase for longer pages
+TEMPERATURE=0.1     # lower = more consistent output
+PORT=8000           # server port
 ```
 
 <br>
@@ -219,6 +219,8 @@ PORT=8080 python -m app.main
 ---
 
 <p align="center">
-  <sub>MIT License &nbsp;·&nbsp; Give it a ⭐ if you find it useful</sub>
+  <sub>MIT License &nbsp;·&nbsp; Give it a ⭐ if you find it useful</sub>
 </p>
 ```
+
+Plese make this readme file look good in github btw my user name is oleszyk-ai
