@@ -17,3 +17,13 @@ cd parse-local
 chmod +x setup.sh && ./setup.sh
 source .venv/bin/activate
 python -m app.main
+```
+### Windows
+```bash
+git clone https://github.com/oleszyk-ai/parse-local.git
+cd parse-local
+setup.bat
+.venv\Scripts\activate.bat
+python -m app.main
+```
+Then open http://localhost:8000 in your browser.
