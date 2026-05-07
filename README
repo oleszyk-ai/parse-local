@@ -1,60 +1,80 @@
-
+```markdown
 # 🔍 Parse-Local
 
-> Like [Parse.bot](https://parse.bot) but runs 100% on your machine.
-> No API keys. No cloud. No data leaves your PC.
+**Local AI web scraper — like [Parse.bot](https://parse.bot) but fully private.**
 
-Give it a URL and describe what you want. Get back structured JSON.
-The LLM runs locally via llama.cpp — nothing is sent anywhere.
+Give it a URL, describe what you want, get back structured JSON.
+No API keys. No cloud. No data leaves your machine.
+
+<br>
+
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)
+![Model](https://img.shields.io/badge/LLM-Mistral_Nemo_12B-ff6b35?style=flat-square)
+
+<br>
 
 ---
 
-## Requirements
+<br>
 
-- Python 3.10+
-- 8 GB RAM minimum (16 GB recommended)
-- 8 GB free disk space
-- GPU optional but recommended
+## ⚡ Quick Start
 
----
+> [!NOTE]
+> First run will download the model (~7 GB). Subsequent starts are instant.
 
-## Install & Run
+**Linux & macOS**
 
-**Linux / macOS**
 ```bash
 git clone https://github.com/YOUR_USERNAME/parse-local.git
 cd parse-local
 chmod +x setup.sh && ./setup.sh
-source .venv/bin/activate
-python -m app.main
+source .venv/bin/activate && python -m app.main
 ```
 
 **Windows**
+
 ```bat
 git clone https://github.com/YOUR_USERNAME/parse-local.git
 cd parse-local
 setup.bat
-.venv\Scripts\activate.bat
-python -m app.main
+.venv\Scripts\activate && python -m app.main
 ```
 
-Open **http://localhost:8000**
-
-> First run downloads the model (~7 GB). Subsequent starts are instant.
-
----
-
-## Docker
+**Docker**
 
 ```bash
 docker-compose up --build
 ```
 
+Then open **[http://localhost:8000](http://localhost:8000)**
+
+<br>
+
 ---
 
-## API
+<br>
 
-**Scrape a URL**
+## 📋 Requirements
+
+| | Minimum | Recommended |
+|---|---|---|
+| **Python** | 3.10+ | 3.11+ |
+| **RAM** | 8 GB | 16 GB+ |
+| **Disk** | 8 GB free | SSD |
+| **GPU** | — | NVIDIA 8GB+ VRAM |
+
+<br>
+
+---
+
+<br>
+
+## 🔌 API
+
+**Scrape a live URL**
+
 ```bash
 curl -X POST http://localhost:8000/api/scrape/url \
   -H "Content-Type: application/json" \
@@ -65,6 +85,7 @@ curl -X POST http://localhost:8000/api/scrape/url \
 ```
 
 **Parse raw HTML**
+
 ```bash
 curl -X POST http://localhost:8000/api/scrape/html \
   -H "Content-Type: application/json" \
@@ -75,53 +96,81 @@ curl -X POST http://localhost:8000/api/scrape/html \
 ```
 
 **Response**
+
 ```json
 {
   "success": true,
-  "data": { ... },
+  "data": { "..." },
   "elapsed_seconds": 14.2
 }
 ```
 
+<br>
+
 ---
 
-## Configuration
+<br>
 
-Create a `.env` file in the project root:
+## ⚙️ Configuration
+
+Create a `.env` file in the project root and override any defaults:
 
 ```bash
-N_GPU_LAYERS=-1   # -1 = all on GPU, 0 = CPU only
-N_CTX=8192        # context window size
-TEMPERATURE=0.1   # lower = more consistent output
-PORT=8000         # server port
+N_GPU_LAYERS=-1     # -1 = all layers on GPU, 0 = CPU only
+N_CTX=8192          # context window — increase for longer pages
+TEMPERATURE=0.1     # lower = more consistent output
+PORT=8000           # server port
 ```
+
+<br>
 
 ---
 
-## GPU Setup
+<br>
+
+## 🖥️ GPU Acceleration
+
+> [!TIP]
+> GPU is optional but makes extraction 5–10x faster.
 
 **NVIDIA (CUDA)**
+
 ```bash
 pip uninstall llama-cpp-python -y
 CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python --no-cache-dir
 ```
 
 **Apple Silicon (Metal)**
+
 ```bash
 pip uninstall llama-cpp-python -y
 CMAKE_ARGS="-DGGML_METAL=on" pip install llama-cpp-python --no-cache-dir
 ```
 
+Then set `N_GPU_LAYERS=-1` in your `.env` file.
+
+<br>
+
 ---
 
-## Troubleshooting
+<br>
 
-**Model download failed**
+## 🔧 Troubleshooting
+
+<details>
+<summary><b>Model download failed</b></summary>
+
 Download `Mistral-Nemo-Instruct-2407-Q4_K_M.gguf` manually from
 [bartowski/Mistral-Nemo-Instruct-2407-GGUF](https://huggingface.co/bartowski/Mistral-Nemo-Instruct-2407-GGUF)
 and place it in the `models/` directory.
 
-**llama-cpp-python install failed**
+</details>
+
+<details>
+<summary><b>llama-cpp-python install failed</b></summary>
+
+Make sure build tools are installed first:
+
 ```bash
 # Linux
 sudo apt-get install build-essential cmake -y
@@ -129,28 +178,47 @@ sudo apt-get install build-essential cmake -y
 # macOS
 xcode-select --install
 ```
-On Windows install [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) with C++ workload.
 
-**Out of memory**
+On Windows, install [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
+with the **C++ build tools** workload selected, then rerun `setup.bat`.
+
+</details>
+
+<details>
+<summary><b>Out of memory</b></summary>
+
 Set `N_CTX=4096` or `N_GPU_LAYERS=0` in your `.env` file.
 
-**Port already in use**
+</details>
+
+<details>
+<summary><b>Port already in use</b></summary>
+
 ```bash
 PORT=8080 python -m app.main
 ```
 
----
+</details>
 
-## Built With
-
-- [ScrapeGraphAI](https://github.com/ScrapeGraphAI/Scrapegraph-ai)
-- [llama-cpp-python](https://github.com/abetlen/llama-cpp-python)
-- [Mistral Nemo 12B](https://mistral.ai/news/mistral-nemo/)
-- [FastAPI](https://fastapi.tiangolo.com/)
+<br>
 
 ---
 
-## License
+<br>
 
-MIT
+## 🛠️ Built With
+
+[ScrapeGraphAI](https://github.com/ScrapeGraphAI/Scrapegraph-ai) &nbsp;·&nbsp;
+[llama-cpp-python](https://github.com/abetlen/llama-cpp-python) &nbsp;·&nbsp;
+[Mistral Nemo 12B](https://mistral.ai/news/mistral-nemo/) &nbsp;·&nbsp;
+[FastAPI](https://fastapi.tiangolo.com/) &nbsp;·&nbsp;
+[Playwright](https://playwright.dev/)
+
+<br>
+
+---
+
+<p align="center">
+  <sub>MIT License &nbsp;·&nbsp; Give it a ⭐ if you find it useful</sub>
+</p>
 ```
