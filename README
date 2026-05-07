@@ -1,4 +1,4 @@
-
+```
 <div align="center">
 
 # 🔍 Parse-Local
@@ -47,7 +47,7 @@ chmod +x setup.sh && ./setup.sh
 
 # Activate environment and launch
 source .venv/bin/activate && python -m app.main
-
+```
 
 ### 🪟 Windows
 ```powershell
