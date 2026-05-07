@@ -36,11 +36,58 @@ echo [3/5] Installing dependencies...
 echo.
 echo --- Upgrading pip ---
 .venv\Scripts\python.exe -m pip install --upgrade pip
+echo.
+
+:: ─── Install llama-cpp-python from prebuilt binary ───────────
+echo --- Installing llama-cpp-python (prebuilt binary, no compiling) ---
+echo  Detecting Python version...
+echo.
+
+for /f "tokens=*" %%i in ('.venv\Scripts\python.exe -c "import sys; print(f\"{sys.version_info.major}{sys.version_info.minor}\")"') do set PYVER=%%i
+for /f "tokens=*" %%i in ('.venv\Scripts\python.exe -c "import platform; print(platform.machine().lower())"') do set ARCH=%%i
+
+echo  Python version : %PYVER%
+echo  Architecture   : %ARCH%
+echo.
+
+:: Map architecture to wheel tag
+set WHEELTAG=win_amd64
+if "%ARCH%"=="arm64" set WHEELTAG=win_arm64
+
+:: Prebuilt wheels hosted by abetlen (official llama-cpp-python releases)
+set WHEEL_URL=https://github.com/abetlen/llama-cpp-python/releases/download/v0.3.4/llama_cpp_python-0.3.4-cp%PYVER%-cp%PYVER%-win_amd64.whl
+
+echo  Downloading prebuilt wheel from:
+echo  %WHEEL_URL%
+echo.
+
+.venv\Scripts\pip.exe install "%WHEEL_URL%"
+
+if %errorlevel% neq 0 (
+    echo.
+    echo  Prebuilt wheel not found for your Python version.
+    echo  Trying fallback: installing from source...
+    echo  You need Visual Studio Build Tools for this.
+    echo  Download: https://visualstudio.microsoft.com/visual-cpp-build-tools/
+    echo.
+    .venv\Scripts\pip.exe install llama-cpp-python --no-cache-dir
+    if %errorlevel% neq 0 (
+        echo.
+        echo X llama-cpp-python install failed.
+        echo   Please install Visual Studio Build Tools and try again.
+        echo   Or download a prebuilt wheel manually from:
+        echo   https://github.com/abetlen/llama-cpp-python/releases
+        pause
+        exit /b 1
+    )
+)
 
 echo.
-echo --- Installing packages from requirements.txt ---
-echo  This may take 5-10 minutes depending on your internet speed.
-echo  You will see each package being downloaded and installed below.
+echo ✓ llama-cpp-python installed
+echo.
+
+:: ─── Install remaining dependencies ──────────────────────────
+echo --- Installing remaining packages ---
 echo.
 .venv\Scripts\pip.exe install -r requirements.txt --no-cache-dir
 if %errorlevel% neq 0 (
@@ -56,7 +103,7 @@ echo.
 
 :: ─── Install Playwright ──────────────────────────────────────
 echo [4/5] Installing Playwright browsers...
-echo  Downloading Chromium — this may take a few minutes.
+echo  Downloading Chromium browser...
 echo.
 .venv\Scripts\playwright.exe install chromium
 if %errorlevel% neq 0 (
