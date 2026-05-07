@@ -12,7 +12,7 @@ echo.
 echo [1/5] Checking Python...
 where python >nul 2>nul
 if %errorlevel% neq 0 (
-    echo ✗ Python 3.10+ is required but not found.
+    echo X Python 3.10+ is required but not found.
     echo   Install it from https://python.org
     pause
     exit /b 1
@@ -29,23 +29,23 @@ if not exist ".venv" (
     echo ✓ Virtual environment already exists
 )
 
-:: Activate
+:: ─── Activate ────────────────────────────────────────────────
 call .venv\Scripts\activate.bat
 
-:: ─── Install dependencies ────────────────────────────────────
+:: ─── Upgrade pip CORRECTLY on Windows ────────────────────────
 echo [3/5] Installing dependencies...
-pip install --upgrade pip --quiet
-pip install -r requirements.txt --quiet
+.venv\Scripts\python.exe -m pip install --upgrade pip --quiet
+.venv\Scripts\pip.exe install -r requirements.txt --quiet
 echo ✓ Dependencies installed
 
 :: ─── Install Playwright ──────────────────────────────────────
 echo [4/5] Installing Playwright browsers...
-playwright install chromium
+.venv\Scripts\playwright.exe install chromium
 echo ✓ Playwright ready
 
 :: ─── Download model ──────────────────────────────────────────
 echo [5/5] Checking model...
-python -c "from app.model_manager import ensure_model_exists; ensure_model_exists()"
+.venv\Scripts\python.exe -c "from app.model_manager import ensure_model_exists; ensure_model_exists()"
 
 :: ─── Done ────────────────────────────────────────────────────
 echo.
