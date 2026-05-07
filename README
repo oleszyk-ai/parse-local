@@ -1,226 +1,168 @@
+---
+
 ```markdown
+<div align="center">
+
 # 🔍 Parse-Local
 
 **Local AI web scraper — like [Parse.bot](https://parse.bot) but fully private.**
 
-Give it a URL, describe what you want, get back structured JSON.
-No API keys. No cloud. No data leaves your machine.
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![License](https://img.shields.io/badge/License-MIT-22c55e?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![Model](https://img.shields.io/badge/LLM-Mistral_Nemo_12B-ff6b35?style=for-the-badge)](https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407)
 
-<br>
+**Give it a URL, describe what you want, and get back structured JSON.** *No API keys. No cloud. No data leaves your machine.*
 
-![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)
-![Model](https://img.shields.io/badge/LLM-Mistral_Nemo_12B-ff6b35?style=flat-square)
+[Report Bug](https://github.com/oleszyk-ai/parse-local/issues) · [Request Feature](https://github.com/oleszyk-ai/parse-local/issues)
 
-<br>
+</div>
 
 ---
 
-<br>
+## 📖 Table of Contents
+- [⚡ Quick Start](#-quick-start)
+- [📋 Requirements](#-requirements)
+- [🔌 API Reference](#-api-reference)
+- [⚙️ Configuration](#-configuration)
+- [🖥️ GPU Acceleration](#-gpu-acceleration)
+- [🔧 Troubleshooting](#-troubleshooting)
+
+---
 
 ## ⚡ Quick Start
 
-> [!NOTE]
-> First run will download the model (~7 GB). Subsequent starts are instant.
+> [!IMPORTANT]
+> The first run will download the Mistral model (~7 GB). Subsequent starts are near-instant.
 
-**Linux & macOS**
-
+### 🐧 Linux & 🍎 macOS
 ```bash
-git clone https://github.com/YOUR_USERNAME/parse-local.git
+git clone [https://github.com/oleszyk-ai/parse-local.git](https://github.com/oleszyk-ai/parse-local.git)
 cd parse-local
 chmod +x setup.sh && ./setup.sh
 source .venv/bin/activate && python -m app.main
 ```
 
-**Windows**
-
-```bat
-git clone https://github.com/YOUR_USERNAME/parse-local.git
+### 🪟 Windows
+```powershell
+git clone [https://github.com/oleszyk-ai/parse-local.git](https://github.com/oleszyk-ai/parse-local.git)
 cd parse-local
-setup.bat
-.venv\Scripts\activate && python -m app.main
+./setup.bat
+.venv\Scripts\activate
+python -m app.main
 ```
 
-**Docker**
-
+### 🐳 Docker
 ```bash
 docker-compose up --build
 ```
 
-Then open **[http://localhost:8000](http://localhost:8000)**
-
-<br>
+Once running, open your browser to **[http://localhost:8000](http://localhost:8000)**
 
 ---
-
-<br>
 
 ## 📋 Requirements
 
-| | Minimum | Recommended |
-|---|---|---|
+| Resource | Minimum | Recommended |
+| :--- | :--- | :--- |
 | **Python** | 3.10+ | 3.11+ |
 | **RAM** | 8 GB | 16 GB+ |
-| **Disk** | 8 GB free | SSD |
-| **GPU** | — | NVIDIA 8GB+ VRAM |
-
-<br>
+| **Disk** | 8 GB free | NVMe SSD |
+| **GPU** | Optional | NVIDIA 8GB+ VRAM |
 
 ---
 
-<br>
+## 🔌 API Reference
 
-## 🔌 API
-
-**Scrape a live URL**
-
+### Scrape a live URL
+`POST /api/scrape/url`
 ```bash
 curl -X POST http://localhost:8000/api/scrape/url \
-  -H "Content-Type: application/json" \
-  -d '{
-    "url": "https://news.ycombinator.com",
-    "prompt": "Extract the top 10 story titles and scores"
-  }'
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "[https://news.ycombinator.com](https://news.ycombinator.com)",
+    "prompt": "Extract the top 10 story titles and scores"
+  }'
 ```
 
-**Parse raw HTML**
-
+### Parse raw HTML
+`POST /api/scrape/html`
 ```bash
 curl -X POST http://localhost:8000/api/scrape/html \
-  -H "Content-Type: application/json" \
-  -d '{
-    "html": "<div>...</div>",
-    "prompt": "Extract all product names and prices"
-  }'
+  -H "Content-Type: application/json" \
+  -d '{
+    "html": "<div><h1>Product A</h1><span>$20</span></div>",
+    "prompt": "Extract all product names and prices"
+  }'
 ```
-
-**Response**
-
-```json
-{
-  "success": true,
-  "data": { "..." },
-  "elapsed_seconds": 14.2
-}
-```
-
-<br>
 
 ---
-
-<br>
 
 ## ⚙️ Configuration
 
-Create a `.env` file in the project root and override any defaults:
+Create a `.env` file in the project root to customize performance:
 
-```bash
-N_GPU_LAYERS=-1     # -1 = all layers on GPU, 0 = CPU only
-N_CTX=8192          # context window — increase for longer pages
-TEMPERATURE=0.1     # lower = more consistent output
-PORT=8000           # server port
+```ini
+N_GPU_LAYERS=-1     # -1 = all layers on GPU, 0 = CPU only
+N_CTX=8192          # Context window (increase for larger pages)
+TEMPERATURE=0.1     # Lower = more consistent JSON
+PORT=8000           # Server port
 ```
 
-<br>
-
 ---
-
-<br>
 
 ## 🖥️ GPU Acceleration
 
 > [!TIP]
-> GPU is optional but makes extraction 5–10x faster.
+> Using a GPU makes extraction 5–10x faster.
 
 **NVIDIA (CUDA)**
-
 ```bash
 pip uninstall llama-cpp-python -y
 CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python --no-cache-dir
 ```
 
 **Apple Silicon (Metal)**
-
 ```bash
 pip uninstall llama-cpp-python -y
 CMAKE_ARGS="-DGGML_METAL=on" pip install llama-cpp-python --no-cache-dir
 ```
 
-Then set `N_GPU_LAYERS=-1` in your `.env` file.
-
-<br>
-
 ---
-
-<br>
 
 ## 🔧 Troubleshooting
 
 <details>
 <summary><b>Model download failed</b></summary>
-
-Download `Mistral-Nemo-Instruct-2407-Q4_K_M.gguf` manually from
-[bartowski/Mistral-Nemo-Instruct-2407-GGUF](https://huggingface.co/bartowski/Mistral-Nemo-Instruct-2407-GGUF)
-and place it in the `models/` directory.
-
+Download <code>Mistral-Nemo-Instruct-2407-Q4_K_M.gguf</code> manually from 
+<a href="https://huggingface.co/bartowski/Mistral-Nemo-Instruct-2407-GGUF">bartowski/Mistral-Nemo-Instruct-2407-GGUF</a> 
+and place it in the <code>models/</code> directory.
 </details>
 
 <details>
 <summary><b>llama-cpp-python install failed</b></summary>
-
-Make sure build tools are installed first:
-
-```bash
-# Linux
-sudo apt-get install build-essential cmake -y
-
-# macOS
-xcode-select --install
-```
-
-On Windows, install [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
-with the **C++ build tools** workload selected, then rerun `setup.bat`.
-
-</details>
-
-<details>
-<summary><b>Out of memory</b></summary>
-
-Set `N_CTX=4096` or `N_GPU_LAYERS=0` in your `.env` file.
-
-</details>
-
-<details>
-<summary><b>Port already in use</b></summary>
-
-```bash
-PORT=8080 python -m app.main
-```
-
-</details>
-
+Ensure build tools are installed:
 <br>
+<b>Linux:</b> <code>sudo apt-get install build-essential cmake -y</code><br>
+<b>macOS:</b> <code>xcode-select --install</code><br>
+<b>Windows:</b> Install <a href="https://visualstudio.microsoft.com/visual-cpp-build-tools/">VS Build Tools</a> with "C++ build tools" selected.
+</details>
 
 ---
-
-<br>
 
 ## 🛠️ Built With
 
-[ScrapeGraphAI](https://github.com/ScrapeGraphAI/Scrapegraph-ai) &nbsp;·&nbsp;
-[llama-cpp-python](https://github.com/abetlen/llama-cpp-python) &nbsp;·&nbsp;
-[Mistral Nemo 12B](https://mistral.ai/news/mistral-nemo/) &nbsp;·&nbsp;
-[FastAPI](https://fastapi.tiangolo.com/) &nbsp;·&nbsp;
-[Playwright](https://playwright.dev/)
+* [ScrapeGraphAI](https://github.com/ScrapeGraphAI/Scrapegraph-ai)
+* [llama-cpp-python](https://github.com/abetlen/llama-cpp-python)
+* [Mistral Nemo 12B](https://mistral.ai/news/mistral-nemo/)
+* [FastAPI](https://fastapi.tiangolo.com/)
 
 <br>
 
----
+<div align="center">
 
-<p align="center">
-  <sub>MIT License &nbsp;·&nbsp; Give it a ⭐ if you find it useful</sub>
-</p>
+Developed by [oleszyk-ai](https://github.com/oleszyk-ai)  
+*Give this project a ⭐ if you find it useful!*
+
+</div>
 ```
-
-Plese make this readme file look good in github btw my user name is oleszyk-ai
