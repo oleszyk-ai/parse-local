@@ -2,5 +2,6 @@ scrapegraphai
 fastapi
 uvicorn[standard]
 huggingface-hub
-playwright
 rich
+httpx
+beautifulsoup4
