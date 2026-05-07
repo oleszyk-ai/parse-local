@@ -1,6 +1,6 @@
 """
-Core scraping logic using local GGUF model via llama-cpp-python directly.
-ScrapeGraphAI's llama-cpp provider is broken — we call the model ourselves.
+Core scraping logic using local GGUF model via llama-cpp-python.
+Uses curl_cffi to fetch pages like a real browser.
 """
 
 import json
@@ -9,7 +9,7 @@ from typing import Any
 from rich.console import Console
 from llama_cpp import Llama
 from bs4 import BeautifulSoup
-import httpx
+from curl_cffi import requests
 
 from app.config import (
     MODEL_PATH,
@@ -44,33 +44,28 @@ def get_llm() -> Llama:
 
 def fetch_page(url: str) -> str:
     """
-    Fetch a URL using httpx.
-    Returns cleaned HTML text.
+    Fetch a URL using curl_cffi — mimics real Chrome browser.
+    Returns cleaned text content.
     """
-    headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/120.0.0.0 Safari/537.36"
-        )
-    }
-
     console.print(f"[blue]🌐[/blue] Fetching: {url}")
 
-    with httpx.Client(follow_redirects=True, timeout=30, headers=headers) as client:
-        response = client.get(url)
-        response.raise_for_status()
+    response = requests.get(
+        url,
+        impersonate="chrome120",
+        timeout=30,
+    )
+    response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "html.parser")
 
-    # Remove junk
-    for tag in soup(["script", "style", "nav", "footer", "head", "meta", "link"]):
+    # Remove junk tags
+    for tag in soup(["script", "style", "nav", "footer", "head", "meta", "link", "noscript"]):
         tag.decompose()
 
-    # Get plain text — much shorter than HTML, fits in context better
+    # Extract text
     text = soup.get_text(separator="\n", strip=True)
 
-    # Collapse excessive blank lines
+    # Collapse blank lines
     lines = [line for line in text.splitlines() if line.strip()]
     clean_text = "\n".join(lines)
 
@@ -84,8 +79,7 @@ def extract_with_llm(content: str, prompt: str) -> Any:
     """
     llm = get_llm()
 
-    # Trim content to fit in context window safely
-    # Leave room for prompt + response
+    # Trim content to fit context window
     max_content_chars = (N_CTX * 3) - 2000
     if len(content) > max_content_chars:
         console.print(f"[yellow]![/yellow] Content trimmed to fit context window")
@@ -127,9 +121,8 @@ def extract_with_llm(content: str, prompt: str) -> Any:
 def parse_llm_output(raw: str) -> Any:
     """
     Parse LLM output into Python object.
-    Handles cases where the model wraps JSON in markdown code blocks.
+    Handles markdown code blocks.
     """
-    # Strip markdown code blocks if present
     raw = raw.strip()
     raw = re.sub(r"^```(?:json)?", "", raw, flags=re.IGNORECASE).strip()
     raw = re.sub(r"```$", "", raw).strip()
@@ -137,7 +130,6 @@ def parse_llm_output(raw: str) -> Any:
     try:
         return json.loads(raw)
     except json.JSONDecodeError:
-        # Return raw string if JSON parsing fails
         console.print(f"[yellow]![/yellow] Could not parse JSON — returning raw text")
         return {"raw": raw}
 
@@ -176,9 +168,8 @@ def scrape_html(html: str, prompt: str) -> dict[str, Any]:
     console.print(f"[blue]📝[/blue] Prompt: {prompt}")
 
     try:
-        # Clean HTML to plain text
         soup = BeautifulSoup(html, "html.parser")
-        for tag in soup(["script", "style", "head", "meta", "link"]):
+        for tag in soup(["script", "style", "head", "meta", "link", "noscript"]):
             tag.decompose()
         lines = [l for l in soup.get_text(separator="\n", strip=True).splitlines() if l.strip()]
         content = "\n".join(lines)
