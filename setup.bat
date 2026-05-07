@@ -40,43 +40,28 @@ echo.
 
 :: ─── Install llama-cpp-python from prebuilt binary ───────────
 echo --- Installing llama-cpp-python (prebuilt binary, no compiling) ---
-echo  Detecting Python version...
 echo.
 
-for /f "tokens=*" %%i in ('.venv\Scripts\python.exe -c "import sys; print(f\"{sys.version_info.major}{sys.version_info.minor}\")"') do set PYVER=%%i
-for /f "tokens=*" %%i in ('.venv\Scripts\python.exe -c "import platform; print(platform.machine().lower())"') do set ARCH=%%i
+:: The correct index URL for prebuilt llama-cpp-python wheels (CPU, Windows)
+:: Hosted officially at: https://abetlen.github.io/llama-cpp-python/whl/cpu
+set INDEX_URL=https://abetlen.github.io/llama-cpp-python/whl/cpu
 
-echo  Python version : %PYVER%
-echo  Architecture   : %ARCH%
+echo  Installing from official prebuilt index:
+echo  %INDEX_URL%
 echo.
 
-:: Map architecture to wheel tag
-set WHEELTAG=win_amd64
-if "%ARCH%"=="arm64" set WHEELTAG=win_arm64
-
-:: Prebuilt wheels hosted by abetlen (official llama-cpp-python releases)
-set WHEEL_URL=https://github.com/abetlen/llama-cpp-python/releases/download/v0.3.4/llama_cpp_python-0.3.4-cp%PYVER%-cp%PYVER%-win_amd64.whl
-
-echo  Downloading prebuilt wheel from:
-echo  %WHEEL_URL%
-echo.
-
-.venv\Scripts\pip.exe install "%WHEEL_URL%"
+.venv\Scripts\pip.exe install llama-cpp-python --extra-index-url %INDEX_URL%
 
 if %errorlevel% neq 0 (
     echo.
-    echo  Prebuilt wheel not found for your Python version.
-    echo  Trying fallback: installing from source...
-    echo  You need Visual Studio Build Tools for this.
-    echo  Download: https://visualstudio.microsoft.com/visual-cpp-build-tools/
+    echo X llama-cpp-python install failed from prebuilt index.
+    echo   Trying pip fallback with no-binary flag...
     echo.
     .venv\Scripts\pip.exe install llama-cpp-python --no-cache-dir
     if %errorlevel% neq 0 (
         echo.
-        echo X llama-cpp-python install failed.
-        echo   Please install Visual Studio Build Tools and try again.
-        echo   Or download a prebuilt wheel manually from:
-        echo   https://github.com/abetlen/llama-cpp-python/releases
+        echo X llama-cpp-python install failed completely.
+        echo   Please check your internet connection and try again.
         pause
         exit /b 1
     )
