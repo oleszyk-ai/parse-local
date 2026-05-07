@@ -1,3 +1,4 @@
+
 <div align="center">
 
 # 🔍 Parse-Local
@@ -9,13 +10,14 @@
 [![License](https://img.shields.io/badge/License-MIT-22c55e?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![Model](https://img.shields.io/badge/LLM-Mistral_Nemo_12B-ff6b35?style=for-the-badge)](https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407)
 
-**Give it a URL, describe what you want, and get back structured JSON.** *No API keys. No cloud. No data leaves your machine.*
+**Give it a URL, describe what you want, and get back structured JSON.**
+*No API keys. No cloud. No data leaves your machine.*
 
 [Report Bug](https://github.com/oleszyk-ai/parse-local/issues) · [Request Feature](https://github.com/oleszyk-ai/parse-local/issues)
 
 ---
 
-### 🌐 [Visit the Web UI](http://localhost:8000) • 🧪 [Try the API](#-api-reference) • 🚀 [Get Started](#-quick-start)
+### 🌐 [Visit the Web UI](http://localhost:8000) &nbsp;•&nbsp; 🧪 [Try the API](#-api-reference) &nbsp;•&nbsp; 🚀 [Get Started](#-quick-start)
 
 </div>
 
@@ -45,7 +47,7 @@ chmod +x setup.sh && ./setup.sh
 
 # Activate environment and launch
 source .venv/bin/activate && python -m app.main
-```
+
 
 ### 🪟 Windows
 ```powershell
@@ -132,6 +134,7 @@ PORT=8000           # Server port
 pip uninstall llama-cpp-python -y
 CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python --no-cache-dir
 ```
+
 </details>
 
 <details>
@@ -141,6 +144,7 @@ CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python --no-cache-dir
 pip uninstall llama-cpp-python -y
 CMAKE_ARGS="-DGGML_METAL=on" pip install llama-cpp-python --no-cache-dir
 ```
+
 </details>
 
 ---
@@ -149,37 +153,44 @@ CMAKE_ARGS="-DGGML_METAL=on" pip install llama-cpp-python --no-cache-dir
 
 <details>
 <summary><b>Model download is too slow or fails</b></summary>
-Download <code>Mistral-Nemo-Instruct-2407-Q4_K_M.gguf</code> manually from 
-<a href="[https://huggingface.co/bartowski/Mistral-Nemo-Instruct-2407-GGUF](https://huggingface.co/bartowski/Mistral-Nemo-Instruct-2407-GGUF)">Hugging Face</a> 
+
+Download <code>Mistral-Nemo-Instruct-2407-Q4_K_M.gguf</code> manually from
+<a href="https://huggingface.co/bartowski/Mistral-Nemo-Instruct-2407-GGUF">Hugging Face</a>
 and place it in the <code>models/</code> directory.
+
 </details>
 
 <details>
 <summary><b>Port 8000 is already in use</b></summary>
-Launch with a different port:
-<code>PORT=8080 python -m app.main</code>
+
+Launch with a different port: <code>PORT=8080 python -m app.main</code>
+
 </details>
 
 <details>
 <summary><b>Installation errors (C++ Build Tools)</b></summary>
-<b>Windows:</b> Install <a href="[https://visualstudio.microsoft.com/visual-cpp-build-tools/](https://visualstudio.microsoft.com/visual-cpp-build-tools/)">VS Build Tools</a> with the "Desktop development with C++" workload.<br>
+
+<b>Windows:</b> Install <a href="https://visualstudio.microsoft.com/visual-cpp-build-tools/">VS Build Tools</a> with the "Desktop development with C++" workload.<br>
 <b>macOS:</b> Run <code>xcode-select --install</code>.
+
 </details>
 
 ---
 
 ## 🛠️ Built With
 
-* [ScrapeGraphAI](https://github.com/ScrapeGraphAI/Scrapegraph-ai) - Intelligent scraping logic
-* [llama-cpp-python](https://github.com/abetlen/llama-cpp-python) - Local LLM inference
-* [Mistral Nemo 12B](https://mistral.ai/news/mistral-nemo/) - State-of-the-art local model
-* [FastAPI](https://fastapi.tiangolo.com/) - High-performance backend
+- [ScrapeGraphAI](https://github.com/ScrapeGraphAI/Scrapegraph-ai) — Intelligent scraping logic
+- [llama-cpp-python](https://github.com/abetlen/llama-cpp-python) — Local LLM inference
+- [Mistral Nemo 12B](https://mistral.ai/news/mistral-nemo/) — State-of-the-art local model
+- [FastAPI](https://fastapi.tiangolo.com/) — High-performance backend
 
-<br>
+---
 
 <div align="center">
 
-Made with ❤️ by [oleszyk-ai](https://github.com/oleszyk-ai)  
+Made with ❤️ by [oleszyk-ai](https://github.com/oleszyk-ai)
+
 *Found this useful? Give it a ⭐!*
 
 </div>
+```
