@@ -1,4 +1,5 @@
 
+```markdown
 <div align="center">
 
 # 🔍 Parse-Local
@@ -37,6 +38,7 @@
 > The first run will download the Mistral model (~7 GB). Ensure you have a stable connection and enough disk space.
 
 ### 🐧 Linux & 🍎 macOS
+
 ```bash
 # Clone the repository
 git clone https://github.com/oleszyk-ai/parse-local.git
@@ -47,9 +49,10 @@ chmod +x setup.sh && ./setup.sh
 
 # Activate environment and launch
 source .venv/bin/activate && python -m app.main
-
+```
 
 ### 🪟 Windows
+
 ```powershell
 # Clone the repository
 git clone https://github.com/oleszyk-ai/parse-local.git
@@ -64,9 +67,10 @@ python -m app.main
 ```
 
 ### 🐳 Docker (Quickest Way)
+
 ```bash
 docker-compose up --build
-
+```
 
 ---
 
@@ -84,6 +88,7 @@ docker-compose up --build
 ## 🔌 API Reference
 
 ### 1. Scrape a live URL
+
 `POST /api/scrape/url`
 
 ```bash
@@ -93,9 +98,10 @@ curl -X POST http://localhost:8000/api/scrape/url \
     "url": "https://news.ycombinator.com",
     "prompt": "Extract the top 10 story titles and scores"
   }'
-
+```
 
 ### 2. Parse raw HTML
+
 `POST /api/scrape/html`
 
 ```bash
@@ -105,7 +111,7 @@ curl -X POST http://localhost:8000/api/scrape/html \
     "html": "<div><h1>Product A</h1><span>$20</span></div>",
     "prompt": "Extract all product names and prices"
   }'
-
+```
 
 ---
 
@@ -118,6 +124,7 @@ N_GPU_LAYERS=-1     # -1 = All layers on GPU (requires CUDA/Metal)
 N_CTX=8192          # Context window (increase for longer pages)
 TEMPERATURE=0.1     # Lower = more consistent JSON output
 PORT=8000           # Server port
+```
 
 ---
 
@@ -132,7 +139,7 @@ PORT=8000           # Server port
 ```bash
 pip uninstall llama-cpp-python -y
 CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python --no-cache-dir
-
+```
 
 </details>
 
@@ -142,7 +149,7 @@ CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python --no-cache-dir
 ```bash
 pip uninstall llama-cpp-python -y
 CMAKE_ARGS="-DGGML_METAL=on" pip install llama-cpp-python --no-cache-dir
-
+```
 
 </details>
 
@@ -192,4 +199,4 @@ Made with ❤️ by [oleszyk-ai](https://github.com/oleszyk-ai)
 *Found this useful? Give it a ⭐!*
 
 </div>
-
+```
