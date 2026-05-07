@@ -3,5 +3,5 @@ fastapi
 uvicorn[standard]
 huggingface-hub
 rich
-httpx
+curl_cffi
 beautifulsoup4
