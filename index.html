@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parse-Local — AI Web Scraper</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Parse-Local</h1>
+            <p class="subtitle">AI-powered web scraper running 100% locally</p>
+        </header>
+
+        <main>
+            <!-- Mode Toggle -->
+            <div class="mode-toggle">
+                <button class="mode-btn active" data-mode="url" onclick="switchMode('url')">
+                    🌐 Scrape URL
+                </button>
+                <button class="mode-btn" data-mode="html" onclick="switchMode('html')">
+                    📄 Parse HTML
+                </button>
+            </div>
+
+            <!-- URL Input -->
+            <div id="url-input-section" class="input-section">
+                <label for="url">URL to scrape</label>
+                <input
+                    type="url"
+                    id="url"
+                    placeholder="https://example.com/products"
+                    spellcheck="false"
+                />
+            </div>
+
+            <!-- HTML Input -->
+            <div id="html-input-section" class="input-section hidden">
+                <label for="html">Paste HTML content</label>
+                <textarea
+                    id="html"
+                    rows="6"
+                    placeholder="<html>...</html>"
+                    spellcheck="false"
+                ></textarea>
+            </div>
+
+            <!-- Prompt -->
+            <div class="input-section">
+                <label for="prompt">What to extract</label>
+                <textarea
+                    id="prompt"
+                    rows="3"
+                    placeholder="Extract all product names, prices, and descriptions as a list"
+                    spellcheck="false"
+                ></textarea>
+            </div>
+
+            <!-- Submit -->
+            <button id="scrape-btn" class="scrape-btn" onclick="runScrape()">
+                <span class="btn-text">🚀 Extract Data</span>
+                <span class="btn-loading hidden">
+                    <span class="spinner"></span> Processing...
+                </span>
+            </button>
+
+            <!-- Results -->
+            <div id="results-section" class="results-section hidden">
+                <div class="results-header">
+                    <h2>Results</h2>
+                    <div class="results-meta">
+                        <span id="elapsed-time"></span>
+                        <button class="copy-btn" onclick="copyResults()">📋 Copy JSON</button>
+                    </div>
+                </div>
+                <pre id="results-output"><code></code></pre>
+            </div>
+
+            <!-- Error -->
+            <div id="error-section" class="error-section hidden">
+                <h2>❌ Error</h2>
+                <p id="error-message"></p>
+            </div>
+        </main>
+
+        <footer>
+            <p>Powered by <a href="https://github.com/ScrapeGraphAI/Scrapegraph-ai" target="_blank">ScrapeGraphAI</a>
+            + Mistral Nemo • Runs 100% on your machine</p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
