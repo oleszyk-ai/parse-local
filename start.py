@@ -235,14 +235,7 @@ def setup_dependencies():
         sys.exit(1)
 
     pip_install(["-r", str(REQUIREMENTS)])
-
-    # Install playwright browsers
-    print_info("Installing Chromium browser for Playwright...")
-    venv_py = get_venv_python()
-    run([str(venv_py), "-m", "playwright", "install", "chromium"])
-
     print_ok("All dependencies installed")
-
 
 def setup_model():
     """Download the model."""
