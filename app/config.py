@@ -14,11 +14,11 @@ FRONTEND_DIR = BASE_DIR / "frontend"
 # Model settings
 MODEL_FILENAME = os.getenv(
     "MODEL_FILENAME",
-    "Mistral-Nemo-Instruct-2407-Q4_K_M.gguf"
+    "Qwen2.5-14B-Instruct-Q4_K_M.gguf"
 )
 MODEL_REPO_ID = os.getenv(
     "MODEL_REPO_ID",
-    "bartowski/Mistral-Nemo-Instruct-2407-GGUF"
+    "bartowski/Qwen2.5-14B-Instruct-GGUF"
 )
 MODEL_PATH = MODELS_DIR / MODEL_FILENAME
 
