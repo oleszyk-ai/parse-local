@@ -1,4 +1,4 @@
-scrapegraphai
+llama-cpp-python
 fastapi
 uvicorn[standard]
 huggingface-hub
