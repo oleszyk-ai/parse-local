@@ -1,29 +1,156 @@
+```markdown
 # 🔍 Parse-Local
 
-**Like [Parse.bot](https://parse.bot) but runs 100% on your machine.**
+> Like [Parse.bot](https://parse.bot) but runs 100% on your machine.
+> No API keys. No cloud. No data leaves your PC.
 
-AI-powered web scraper that uses a local LLM (Mistral Nemo 12B) to extract
-structured data from any webpage. No API keys. No cloud. No data leaves your PC.
+Give it a URL and describe what you want. Get back structured JSON.
+The LLM runs locally via llama.cpp — nothing is sent anywhere.
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
+---
 
-## 🚀 Quick Start
+## Requirements
 
-### Linux / macOS
+- Python 3.10+
+- 8 GB RAM minimum (16 GB recommended)
+- 8 GB free disk space
+- GPU optional but recommended
+
+---
+
+## Install & Run
+
+**Linux / macOS**
 ```bash
-git clone https://github.com/oleszyk-ai/parse-local.git
+git clone https://github.com/YOUR_USERNAME/parse-local.git
 cd parse-local
 chmod +x setup.sh && ./setup.sh
 source .venv/bin/activate
 python -m app.main
+```
 
-### Windows
-```bash
-git clone https://github.com/oleszyk-ai/parse-local.git
+**Windows**
+```bat
+git clone https://github.com/YOUR_USERNAME/parse-local.git
 cd parse-local
 setup.bat
 .venv\Scripts\activate.bat
 python -m app.main
+```
 
-Then open http://localhost:8000 in your browser.
+Open **http://localhost:8000**
+
+> First run downloads the model (~7 GB). Subsequent starts are instant.
+
+---
+
+## Docker
+
+```bash
+docker-compose up --build
+```
+
+---
+
+## API
+
+**Scrape a URL**
+```bash
+curl -X POST http://localhost:8000/api/scrape/url \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://news.ycombinator.com",
+    "prompt": "Extract the top 10 story titles and scores"
+  }'
+```
+
+**Parse raw HTML**
+```bash
+curl -X POST http://localhost:8000/api/scrape/html \
+  -H "Content-Type: application/json" \
+  -d '{
+    "html": "<div>...</div>",
+    "prompt": "Extract all product names and prices"
+  }'
+```
+
+**Response**
+```json
+{
+  "success": true,
+  "data": { ... },
+  "elapsed_seconds": 14.2
+}
+```
+
+---
+
+## Configuration
+
+Create a `.env` file in the project root:
+
+```bash
+N_GPU_LAYERS=-1   # -1 = all on GPU, 0 = CPU only
+N_CTX=8192        # context window size
+TEMPERATURE=0.1   # lower = more consistent output
+PORT=8000         # server port
+```
+
+---
+
+## GPU Setup
+
+**NVIDIA (CUDA)**
+```bash
+pip uninstall llama-cpp-python -y
+CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python --no-cache-dir
+```
+
+**Apple Silicon (Metal)**
+```bash
+pip uninstall llama-cpp-python -y
+CMAKE_ARGS="-DGGML_METAL=on" pip install llama-cpp-python --no-cache-dir
+```
+
+---
+
+## Troubleshooting
+
+**Model download failed**
+Download `Mistral-Nemo-Instruct-2407-Q4_K_M.gguf` manually from
+[bartowski/Mistral-Nemo-Instruct-2407-GGUF](https://huggingface.co/bartowski/Mistral-Nemo-Instruct-2407-GGUF)
+and place it in the `models/` directory.
+
+**llama-cpp-python install failed**
+```bash
+# Linux
+sudo apt-get install build-essential cmake -y
+
+# macOS
+xcode-select --install
+```
+On Windows install [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) with C++ workload.
+
+**Out of memory**
+Set `N_CTX=4096` or `N_GPU_LAYERS=0` in your `.env` file.
+
+**Port already in use**
+```bash
+PORT=8080 python -m app.main
+```
+
+---
+
+## Built With
+
+- [ScrapeGraphAI](https://github.com/ScrapeGraphAI/Scrapegraph-ai)
+- [llama-cpp-python](https://github.com/abetlen/llama-cpp-python)
+- [Mistral Nemo 12B](https://mistral.ai/news/mistral-nemo/)
+- [FastAPI](https://fastapi.tiangolo.com/)
+
+---
+
+## License
+
+MIT
+```
